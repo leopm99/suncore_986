@@ -770,6 +770,12 @@ public final class Config extends AbstractConfigs
 	public static boolean L2JMOD_ALLOW_CHANGE_PASSWORD;
 	
 	// --------------------------------------------------
+	// Siege Castle Manager CMD
+	// --------------------------------------------------
+	public static boolean ENABLE_SIEGE_CASTLE_MANAGER;
+	public static boolean ENABLE_GNU_PANEL;
+	
+	// --------------------------------------------------
 	// NPC Settings
 	// --------------------------------------------------
 	public static boolean ANNOUNCE_MAMMON_SPAWN;
@@ -2376,6 +2382,9 @@ public final class Config extends AbstractConfigs
 				}
 			}
 			L2JMOD_ALLOW_CHANGE_PASSWORD = L2JModSettings.getBoolean("AllowChangePassword", false);
+			
+			ENABLE_SIEGE_CASTLE_MANAGER = L2JModSettings.getBoolean("AllowSiegeCastleManager", true);
+			ENABLE_GNU_PANEL = L2JModSettings.getBoolean("EnableGNUPanel", true);
 			
 			// Load PvP L2Properties file (if exists)
 			final PropertiesParser PVPSettings = new PropertiesParser(PVP_CONFIG_FILE);
