@@ -24,6 +24,7 @@ import java.util.logging.Logger;
 
 import l2r.Config;
 import l2r.gameserver.SevenSignsFestival;
+import l2r.gameserver.custom.CustomMethodes;
 import l2r.gameserver.enums.ZoneIdType;
 import l2r.gameserver.instancemanager.AntiFeedManager;
 import l2r.gameserver.model.L2Party;
@@ -182,6 +183,7 @@ public final class RequestRestart extends L2GameClientPacket
 		_logAccounting.log(record);
 		
 		// detach the client from the char so that the connection isnt closed in the deleteMe
+		CustomMethodes.checkForOldVisuals(player);
 		player.setClient(null);
 		
 		player.deleteMe();

@@ -890,14 +890,14 @@ public final class L2ItemInstance extends L2Object
 	public boolean isAvailable(L2PcInstance player, boolean allowAdena, boolean allowNonTradeable)
 	{
 		return ((!isEquipped()) // Not equipped
-		&& (getItem().getType2() != L2Item.TYPE2_QUEST) // Not Quest Item
-		&& ((getItem().getType2() != L2Item.TYPE2_MONEY) || (getItem().getType1() != L2Item.TYPE1_SHIELD_ARMOR)) // not money, not shield
-		&& (!player.hasSummon() || (getObjectId() != player.getSummon().getControlObjectId())) // Not Control item of currently summoned pet
-		&& (player.getActiveEnchantItemId() != getObjectId()) // Not momentarily used enchant scroll
-		&& (player.getActiveEnchantSupportItemId() != getObjectId()) // Not momentarily used enchant support item
-		&& (player.getActiveEnchantAttrItemId() != getObjectId()) // Not momentarily used enchant attribute item
-		&& (allowAdena || (getId() != Inventory.ADENA_ID)) // Not Adena
-		&& ((player.getCurrentSkill() == null) || (player.getCurrentSkill().getSkill().getItemConsumeId() != getId())) && (!player.isCastingSimultaneouslyNow() || (player.getLastSimultaneousSkillCast() == null) || (player.getLastSimultaneousSkillCast().getItemConsumeId() != getId())) && (allowNonTradeable || (isTradeable() && (!((getItem().getItemType() == EtcItemType.PET_COLLAR) && player.havePetInvItems())))));
+			&& (getItem().getType2() != L2Item.TYPE2_QUEST) // Not Quest Item
+			&& ((getItem().getType2() != L2Item.TYPE2_MONEY) || (getItem().getType1() != L2Item.TYPE1_SHIELD_ARMOR)) // not money, not shield
+			&& (!player.hasSummon() || (getObjectId() != player.getSummon().getControlObjectId())) // Not Control item of currently summoned pet
+			&& (player.getActiveEnchantItemId() != getObjectId()) // Not momentarily used enchant scroll
+			&& (player.getActiveEnchantSupportItemId() != getObjectId()) // Not momentarily used enchant support item
+			&& (player.getActiveEnchantAttrItemId() != getObjectId()) // Not momentarily used enchant attribute item
+			&& (allowAdena || (getId() != Inventory.ADENA_ID)) // Not Adena
+			&& ((player.getCurrentSkill() == null) || (player.getCurrentSkill().getSkill().getItemConsumeId() != getId())) && (!player.isCastingSimultaneouslyNow() || (player.getLastSimultaneousSkillCast() == null) || (player.getLastSimultaneousSkillCast().getItemConsumeId() != getId())) && (allowNonTradeable || (isTradeable() && (!((getItem().getItemType() == EtcItemType.PET_COLLAR) && player.havePetInvItems())))));
 	}
 	
 	/**
@@ -1531,6 +1531,8 @@ public final class L2ItemInstance extends L2Object
 		int objectId, item_id, loc_data, enchant_level, custom_type1, custom_type2, manaLeft;
 		long time, count;
 		ItemLocation loc;
+		
+		int visualItemId;
 		try
 		{
 			objectId = rs.getInt(1);
@@ -1543,6 +1545,7 @@ public final class L2ItemInstance extends L2Object
 			custom_type2 = rs.getInt("custom_type2");
 			manaLeft = rs.getInt("mana_left");
 			time = rs.getLong("time");
+			visualItemId = rs.getInt("visual_item_id");
 		}
 		catch (Exception e)
 		{
@@ -1569,6 +1572,9 @@ public final class L2ItemInstance extends L2Object
 		// Setup life time for shadow weapons
 		inst._mana = manaLeft;
 		inst._time = time;
+		
+		// Set visual item id for dress me
+		inst.visualItemId = visualItemId;
 		
 		// load augmentation and elemental enchant
 		if (inst.isEquipable())
@@ -1678,7 +1684,7 @@ public final class L2ItemInstance extends L2Object
 		}
 		
 		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement ps = con.prepareStatement("UPDATE items SET owner_id=?,count=?,loc=?,loc_data=?,enchant_level=?,custom_type1=?,custom_type2=?,mana_left=?,time=? " + "WHERE object_id = ?"))
+			PreparedStatement ps = con.prepareStatement("UPDATE items SET owner_id=?,count=?,loc=?,loc_data=?,enchant_level=?,custom_type1=?,custom_type2=?,mana_left=?,time=?,visual_item_id=? " + "WHERE object_id = ?"))
 		{
 			ps.setInt(1, _ownerId);
 			ps.setLong(2, getCount());
@@ -1689,7 +1695,8 @@ public final class L2ItemInstance extends L2Object
 			ps.setInt(7, getCustomType2());
 			ps.setInt(8, getMana());
 			ps.setLong(9, getTime());
-			ps.setInt(10, getObjectId());
+			ps.setInt(10, getVisualItemId());
+			ps.setInt(11, getObjectId());
 			ps.executeUpdate();
 			_existsInDb = true;
 			_storedInDb = true;
@@ -1713,7 +1720,7 @@ public final class L2ItemInstance extends L2Object
 		}
 		
 		try (Connection con = L2DatabaseFactory.getInstance().getConnection();
-			PreparedStatement ps = con.prepareStatement("INSERT INTO items (owner_id,item_id,count,loc,loc_data,enchant_level,object_id,custom_type1,custom_type2,mana_left,time) " + "VALUES (?,?,?,?,?,?,?,?,?,?,?)"))
+			PreparedStatement ps = con.prepareStatement("INSERT INTO items (owner_id,item_id,count,loc,loc_data,enchant_level,object_id,custom_type1,custom_type2,mana_left,time,visual_item_id) " + "VALUES (?,?,?,?,?,?,?,?,?,?,?,?)"))
 		{
 			ps.setInt(1, _ownerId);
 			ps.setInt(2, _itemId);
@@ -1726,6 +1733,7 @@ public final class L2ItemInstance extends L2Object
 			ps.setInt(9, _type2);
 			ps.setInt(10, getMana());
 			ps.setLong(11, getTime());
+			ps.setInt(12, getVisualItemId());
 			
 			ps.executeUpdate();
 			_existsInDb = true;
@@ -2277,6 +2285,31 @@ public final class L2ItemInstance extends L2Object
 			_lifeTimeTask.cancel(false);
 			_lifeTimeTask = null;
 		}
+	}
+	
+	// Used for dress me engine
+	private int visualItemId = 0;
+	
+	public int getVisualItemId()
+	{
+		return visualItemId;
+	}
+	
+	public void setVisualItemId(int visualItemId)
+	{
+		this.visualItemId = visualItemId;
+	}
+	
+	private int oldVisualItemId = 0;
+	
+	public int getOldVisualItemId()
+	{
+		return oldVisualItemId;
+	}
+	
+	public void setOldVisualItemId(int oVisual)
+	{
+		this.oldVisualItemId = oVisual;
 	}
 	
 	public boolean fromMob;

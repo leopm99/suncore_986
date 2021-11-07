@@ -63,6 +63,7 @@ import l2r.gameserver.ai.L2SummonAI;
 import l2r.gameserver.cache.WarehouseCacheManager;
 import l2r.gameserver.communitybbs.BB.Forum;
 import l2r.gameserver.communitybbs.Managers.ForumsBBSManager;
+import l2r.gameserver.custom.CustomMethodes;
 import l2r.gameserver.dao.factory.impl.DAOFactory;
 import l2r.gameserver.data.sql.CharNameTable;
 import l2r.gameserver.data.sql.CharSummonTable;
@@ -298,6 +299,7 @@ import l2r.gameserver.network.serverpackets.RelationChanged;
 import l2r.gameserver.network.serverpackets.Ride;
 import l2r.gameserver.network.serverpackets.ServerClose;
 import l2r.gameserver.network.serverpackets.SetupGauge;
+import l2r.gameserver.network.serverpackets.ShopPreviewInfo;
 import l2r.gameserver.network.serverpackets.ShortCutInit;
 import l2r.gameserver.network.serverpackets.SkillCoolTime;
 import l2r.gameserver.network.serverpackets.SkillList;
@@ -5504,13 +5506,13 @@ public final class L2PcInstance extends L2Playable
 				{
 					// Don't drop
 					if (itemDrop.isShadowItem() || // Dont drop Shadow Items
-					itemDrop.isTimeLimitedItem() || // Dont drop Time Limited Items
-					!itemDrop.isDropable() || (itemDrop.getId() == Inventory.ADENA_ID) || // Adena
-					(itemDrop.getItem().getType2() == L2Item.TYPE2_QUEST) || // Quest Items
-					(hasSummon() && (getSummon().getControlObjectId() == itemDrop.getId())) || // Control Item of active pet
-					(Arrays.binarySearch(Config.KARMA_LIST_NONDROPPABLE_ITEMS, itemDrop.getId()) >= 0) || // Item listed in the non droppable item list
-					(Arrays.binarySearch(Config.KARMA_LIST_NONDROPPABLE_PET_ITEMS, itemDrop.getId()) >= 0 // Item listed in the non droppable pet item list
-					))
+						itemDrop.isTimeLimitedItem() || // Dont drop Time Limited Items
+						!itemDrop.isDropable() || (itemDrop.getId() == Inventory.ADENA_ID) || // Adena
+						(itemDrop.getItem().getType2() == L2Item.TYPE2_QUEST) || // Quest Items
+						(hasSummon() && (getSummon().getControlObjectId() == itemDrop.getId())) || // Control Item of active pet
+						(Arrays.binarySearch(Config.KARMA_LIST_NONDROPPABLE_ITEMS, itemDrop.getId()) >= 0) || // Item listed in the non droppable item list
+						(Arrays.binarySearch(Config.KARMA_LIST_NONDROPPABLE_PET_ITEMS, itemDrop.getId()) >= 0 // Item listed in the non droppable pet item list
+						))
 					{
 						continue;
 					}
@@ -5619,13 +5621,13 @@ public final class L2PcInstance extends L2Playable
 		
 		// Check if it's pvp
 		if (((checkIfPvP(target) && // Can pvp and
-		(targetPlayer.getPvpFlag() != 0 // Target player has pvp flag set
-		)) || // or
-		(isInsideZone(ZoneIdType.PVP) && // Player is inside pvp zone and
-		targetPlayer.isInsideZone(ZoneIdType.PVP) // Target player is inside pvp zone
-		)) || // or
-		(isInsideZone(ZoneIdType.ZONE_CHAOTIC) && // Player is inside chaotic zone and
-		targetPlayer.isInsideZone(ZoneIdType.ZONE_CHAOTIC))) // Target player is inside chaotic zone
+			(targetPlayer.getPvpFlag() != 0 // Target player has pvp flag set
+			)) || // or
+			(isInsideZone(ZoneIdType.PVP) && // Player is inside pvp zone and
+				targetPlayer.isInsideZone(ZoneIdType.PVP) // Target player is inside pvp zone
+			)) || // or
+			(isInsideZone(ZoneIdType.ZONE_CHAOTIC) && // Player is inside chaotic zone and
+				targetPlayer.isInsideZone(ZoneIdType.ZONE_CHAOTIC))) // Target player is inside chaotic zone
 		{
 			increasePvpKills(target);
 		}
@@ -11107,6 +11109,15 @@ public final class L2PcInstance extends L2Playable
 		
 		try
 		{
+			CustomMethodes.checkForOldVisuals(this);
+		}
+		catch (Exception e)
+		{
+			_log.error("deleteMe()", e);
+		}
+		
+		try
+		{
 			for (L2Effect effect : getAllEffects())
 			{
 				if (effect.getSkill().isToggle())
@@ -14456,6 +14467,11 @@ public final class L2PcInstance extends L2Playable
 	private void loadVariables()
 	{
 		_sunriseVariables.loadVariables();
+	}
+	
+	public void sendShopPreviewInfoPacket(Map<Integer, Integer> itemList)
+	{
+		sendPacket(new ShopPreviewInfo(itemList));
 	}
 	
 	/**

@@ -24,6 +24,7 @@ import java.util.logging.Logger;
 
 import l2r.Config;
 import l2r.gameserver.SevenSignsFestival;
+import l2r.gameserver.custom.CustomMethodes;
 import l2r.gameserver.enums.ZoneIdType;
 import l2r.gameserver.instancemanager.AntiFeedManager;
 import l2r.gameserver.model.actor.instance.L2PcInstance;
@@ -47,7 +48,7 @@ public final class Logout extends L2GameClientPacket
 	@Override
 	protected void readImpl()
 	{
-	
+		
 	}
 	
 	@Override
@@ -157,6 +158,7 @@ public final class Logout extends L2GameClientPacket
 		}
 		
 		// Remove player from Boss Zone
+		CustomMethodes.checkForOldVisuals(player);
 		player.removeFromBossZone();
 		AntiFeedManager.getInstance().onDisconnect(player.getClient());
 		
