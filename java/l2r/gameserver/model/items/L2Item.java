@@ -172,6 +172,9 @@ public abstract class L2Item extends ListenersContainer implements IIdentifiable
 	// vGodFather
 	private final boolean _mustConsume;
 	
+	// Elemental
+	private final boolean _isForPet = false;
+	
 	/**
 	 * Constructor of the L2Item that fill class variables.<BR>
 	 * <BR>
@@ -1056,5 +1059,130 @@ public abstract class L2Item extends ListenersContainer implements IIdentifiable
 			return null;
 		}
 		return _enchant4Skill.getSkill();
+	}
+	
+	/**
+	 * Returns true if item is armor or shield.
+	 * @return true if item is armor or shield, otherwise false
+	 */
+	public boolean isArmorOrShield()
+	{
+		return _type2 == TYPE2_SHIELD_ARMOR;
+	}
+	
+	/**
+	 * Returns true if item is weapon.
+	 * @return true if item is weapon, otherwise false
+	 */
+	public boolean isWeapon()
+	{
+		return _type2 == TYPE2_WEAPON;
+	}
+	
+	/**
+	 * @return Returns the crystal type name of the item
+	 */
+	public final String getCrystalName()
+	{
+		switch (_crystalType)
+		{
+			case NONE:
+				return "None";
+			case D:
+				return "D";
+			case C:
+				return "C";
+			case B:
+				return "B";
+			case A:
+				return "A";
+			case S:
+				return "S";
+			case S80:
+				return "S80";
+			case S84:
+				return "S84";
+		}
+		
+		return "All";
+	}
+	
+	/**
+	 * @return Returns true if this item is a jewel
+	 */
+	public boolean isJewel()
+	{
+		return (_bodyPart == L2Item.SLOT_LR_FINGER) || (_bodyPart == L2Item.SLOT_LR_EAR) || (_bodyPart == L2Item.SLOT_NECK);
+	}
+	
+	/**
+	 * @return Returns true if this items is only for pets
+	 */
+	public boolean isForPet()
+	{
+		return _isForPet;
+	}
+	
+	/**
+	 * It also takes into account that stat enchants
+	 * @param activeChar
+	 * @param item
+	 * @param stat
+	 * @param order
+	 * @return Returns the value of a certain function of the item. This is for example to find the value in <set order = "0x08" stat = "MATK" val = "28" /> with order 0x08 and MATK stat
+	 */
+	public double getValueFromStatFunc(L2PcInstance activeChar, L2ItemInstance item, String stat, String order)
+	{
+		try
+		{
+			// First we find the constant value of that stat
+			double value = 0;
+			for (FuncTemplate t : _funcTemplates)
+			{
+				if (!t.getStat().getValue().equalsIgnoreCase(stat))
+				{
+					continue;
+				}
+				
+				if (t.getOrder() != Integer.decode(order))
+				{
+					continue;
+				}
+				
+			}
+			
+			// Then look for the enchant
+			for (FuncTemplate t : _funcTemplates)
+			{
+				if (!t.getStat().getValue().equalsIgnoreCase(stat))
+				{
+					continue;
+				}
+				
+				if (!t.functionClass.getSimpleName().equalsIgnoreCase("FuncEnchant"))
+				{
+					continue;
+				}
+				
+				Env env = new Env();
+				env.setCharacter(activeChar);
+				env.setTarget(activeChar);
+				env.setItem(item);
+				
+				AbstractFunction func = t.getFunc(env, item);
+				if (func == null)
+				{
+					continue;
+				}
+				
+				func.calc(env);
+				return value + env.getValue();
+			}
+		}
+		catch (NumberFormatException e)
+		{
+		}
+		
+		return 0;
 	}
 }

@@ -1,0 +1,4 @@
+#the hexID to auth into login
+#Sat Nov 13 13:31:25 GFT 2021
+HexID=-3bf10093fadf94aa5fda6b1d3c78b122
+ServerID=1

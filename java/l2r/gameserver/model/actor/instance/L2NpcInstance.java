@@ -120,6 +120,45 @@ public class L2NpcInstance extends L2Npc
 			return;
 		}
 		
+		// Rebirth Npc
+		if (npcId == 500)
+		{
+			final List<L2SkillLearn> skills = SkillTreesData.getInstance().getAvailableRebirthSkills(player);
+			final AcquireSkillList asl = new AcquireSkillList(AcquireSkillType.CLASS);
+			
+			int counts = 0;
+			for (L2SkillLearn s : skills)
+			{
+				final L2Skill sk = SkillData.getInstance().getInfo(s.getSkillId(), s.getSkillLevel());
+				
+				if (sk != null)
+				{
+					counts++;
+					asl.addSkill(s.getSkillId(), s.getSkillLevel(), s.getSkillLevel(), 0, 1);
+				}
+			}
+			
+			if (counts == 0) // No more skills to learn, come back when you level.
+			{
+				final int minLevel = SkillTreesData.getInstance().getMinLevelForNewSkill(player, SkillTreesData.getInstance().getCollectSkillTree());
+				if (minLevel > 0)
+				{
+					SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.DO_NOT_HAVE_FURTHER_SKILLS_TO_LEARN_S1);
+					sm.addInt(minLevel);
+					player.sendPacket(sm);
+				}
+				else
+				{
+					player.sendPacket(SystemMessageId.NO_MORE_SKILLS_TO_LEARN);
+				}
+			}
+			else
+			{
+				player.sendPacket(asl);
+			}
+			return;
+		}
+		
 		if (!npc.getTemplate().canTeach(classId))
 		{
 			npc.showNoTeachHtml(player);

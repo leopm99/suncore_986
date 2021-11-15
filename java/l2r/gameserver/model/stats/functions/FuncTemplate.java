@@ -64,10 +64,10 @@ public final class FuncTemplate
 		{
 			functionClass = Class.forName("l2r.gameserver.model.stats.functions.Func" + function.getName());
 			_constructor = functionClass.getConstructor(Stats.class, // Stats to update
-			Integer.TYPE, // Order of execution
-			Object.class, // Owner
-			Double.TYPE, // Value for function
-			Condition.class // Condition
+				Integer.TYPE, // Order of execution
+				Object.class, // Owner
+				Double.TYPE, // Value for function
+				Condition.class // Condition
 			);
 		}
 		catch (ClassNotFoundException | NoSuchMethodException e)

@@ -31,11 +31,15 @@ import java.util.logging.LogManager;
 import l2r.Config;
 import l2r.FloodProtectorsConfig;
 import l2r.L2DatabaseFactory;
+import l2r.RebirthEngineConfigs;
 import l2r.Server;
 import l2r.UPnPService;
+import l2r.features.auctionEngine.managers.AuctionHouseManager;
 import l2r.features.sellBuffEngine.BuffShopManager;
 import l2r.features.sellBuffEngine.configs.impl.BuffShopConfigs;
 import l2r.gameserver.cache.HtmCache;
+import l2r.gameserver.communitybbs.SunriseBoards.dropCalc.DropCalculatorConfigs;
+import l2r.gameserver.communitybbs.SunriseBoards.dropCalc.DropInfoHandler;
 import l2r.gameserver.dao.factory.impl.DAOFactory;
 import l2r.gameserver.data.EventDroplist;
 import l2r.gameserver.data.SpawnTable;
@@ -158,6 +162,8 @@ import com.l2jserver.mmocore.SelectorThread;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import itopz.com.VDSystemManager;
 
 public class GameServer
 {
@@ -304,6 +310,8 @@ public class GameServer
 		printSection("Auction Manager");
 		ItemAuctionManager.getInstance();
 		
+		VDSystemManager.getInstance();
+		
 		printSection("Olympiad");
 		if (Config.ENABLE_OLYMPIAD)
 		{
@@ -396,6 +404,14 @@ public class GameServer
 		BuffShopManager.getInstance().restoreOfflineTraders();
 		SunriseServerMods.getInstance().checkSunriseMods();
 		DressMeLoader.load();
+		
+		// Auction House Manager
+		AuctionHouseManager.getInstance();
+		
+		if (DropCalculatorConfigs.ENABLE_DROP_CALCULATOR)
+		{
+			DropInfoHandler.getInstance().load();
+		}
 		
 		if (Config.SAVE_DROPPED_ITEM)
 		{
@@ -532,8 +548,10 @@ public class GameServer
 		Config.load();
 		ServerTypeConfigs.getInstance().loadConfigs();
 		BuffShopConfigs.getInstance().loadConfigs();
+		RebirthEngineConfigs.getInstance().loadConfigs();
 		FloodProtectorsConfig.load();
 		// Sunrise configs load section
+		DropCalculatorConfigs.getInstance().loadConfigs();
 		ConfigsController.getInstance().reloadSunriseConfigs();
 		// Check binding address
 		checkFreePorts();

@@ -91,6 +91,7 @@ public final class SkillTreesData implements IXmlReader
 	private final Map<Integer, L2SkillLearn> _heroSkillTree = new LinkedHashMap<>();
 	private final Map<Integer, L2SkillLearn> _gameMasterSkillTree = new LinkedHashMap<>();
 	private final Map<Integer, L2SkillLearn> _gameMasterAuraSkillTree = new LinkedHashMap<>();
+	private final Map<Integer, L2SkillLearn> _rebirthSkillTrees = new LinkedHashMap<>();
 	
 	// Checker, sorted arrays of hash codes
 	private Map<Integer, int[]> _skillsByClassIdHashCodes; // Occupation skills
@@ -288,6 +289,13 @@ public final class SkillTreesData implements IXmlReader
 										_gameMasterAuraSkillTree.put(skillHashCode, skillLearn);
 										break;
 									}
+									
+									case "rebirthSkillTree":
+									{
+										_rebirthSkillTrees.put(skillHashCode, skillLearn);
+										break;
+									}
+									
 									default:
 									{
 										LOGGER.warn(getClass().getSimpleName() + ": Unknown Skill Tree type: " + type + "!");
@@ -731,6 +739,27 @@ public final class SkillTreesData implements IXmlReader
 		return result;
 	}
 	
+	public List<L2SkillLearn> getAvailableRebirthSkills(L2PcInstance player)
+	{
+		final List<L2SkillLearn> result = new ArrayList<>();
+		for (L2SkillLearn skill : _rebirthSkillTrees.values())
+		{
+			final L2Skill oldSkill = player.getSkills().get(skill.getSkillId());
+			if (oldSkill != null)
+			{
+				if (oldSkill.getLevel() == (skill.getSkillLevel() - 1))
+				{
+					result.add(skill);
+				}
+			}
+			else if (skill.getSkillLevel() == 1)
+			{
+				result.add(skill);
+			}
+		}
+		return result;
+	}
+	
 	/**
 	 * Gets the available pledge skills.
 	 * @param clan the pledge skill learning clan
@@ -887,6 +916,10 @@ public final class SkillTreesData implements IXmlReader
 		{
 			case CLASS:
 				sl = getClassSkill(id, lvl, player.getLearningClass());
+				if (sl == null)
+				{
+					sl = getRebirthSkill(id, lvl);
+				}
 				break;
 			case TRANSFORM:
 				sl = getTransformSkill(id, lvl);
@@ -1023,6 +1056,17 @@ public final class SkillTreesData implements IXmlReader
 	}
 	
 	/**
+	 * Gets the transform skill.
+	 * @param id the transformation skill Id
+	 * @param lvl the transformation skill level
+	 * @return the transform skill from the Transform Skill Tree for a given {@code id} and {@code lvl}
+	 */
+	public L2SkillLearn getRebirthSkill(int id, int lvl)
+	{
+		return _rebirthSkillTrees.get(SkillData.getSkillHashCode(id, lvl));
+	}
+	
+	/**
 	 * Gets the minimum level for new skill.
 	 * @param player the player that requires the minimum level
 	 * @param skillTree the skill tree to search the minimum get level
@@ -1085,7 +1129,7 @@ public final class SkillTreesData implements IXmlReader
 		if (skillLevel <= 0)
 		{
 			return _gameMasterSkillTree.values().stream().filter(s -> s.getSkillId() == skillId).findAny().isPresent() //
-			|| _gameMasterAuraSkillTree.values().stream().filter(s -> s.getSkillId() == skillId).findAny().isPresent();
+				|| _gameMasterAuraSkillTree.values().stream().filter(s -> s.getSkillId() == skillId).findAny().isPresent();
 		}
 		
 		final int hashCode = SkillData.getSkillHashCode(skillId, skillLevel);

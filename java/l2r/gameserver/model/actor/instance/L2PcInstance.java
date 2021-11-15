@@ -351,6 +351,26 @@ import gr.sr.zones.FlagZoneHandler;
  */
 public final class L2PcInstance extends L2Playable
 {
+	private final Map<Integer, Future<?>> _autoPotTasks = new HashMap<>();
+	
+	public boolean isAutoPot(int id)
+	{
+		return _autoPotTasks.keySet().contains(id);
+	}
+	
+	public void setAutoPot(int id, Future<?> task, boolean add)
+	{
+		if (add)
+		{
+			_autoPotTasks.put(id, task);
+		}
+		else
+		{
+			_autoPotTasks.get(id).cancel(true);
+			_autoPotTasks.remove(id);
+		}
+	}
+	
 	// Character Skill Save SQL String Definitions:
 	private static final String ADD_SKILL_SAVE = "INSERT INTO character_skills_save (charId,skill_id,skill_level,effect_count,effect_cur_time,reuse_delay,systime,restore_type,class_index,buff_index) VALUES (?,?,?,?,?,?,?,?,?,?)";
 	private static final String RESTORE_SKILL_SAVE = "SELECT skill_id,skill_level,effect_count,effect_cur_time, reuse_delay, systime, restore_type FROM character_skills_save WHERE charId=? AND class_index=? ORDER BY buff_index ASC";
@@ -9180,6 +9200,23 @@ public final class L2PcInstance extends L2Playable
 			SystemMessage sm = SystemMessage.getSystemMessage(SystemMessageId.AUTO_USE_OF_S1_CANCELLED);
 			sm.addItemName(itemId);
 			sendPacket(sm);
+			
+			if (isAutoPot(728))
+			{
+				sendPacket(new ExAutoSoulShot(728, 0));
+				setAutoPot(728, null, false);
+			}
+			if (isAutoPot(1539))
+			{
+				sendPacket(new ExAutoSoulShot(1539, 0));
+				setAutoPot(1539, null, false);
+			}
+			if (isAutoPot(5592))
+			{
+				sendPacket(new ExAutoSoulShot(5592, 0));
+				setAutoPot(5592, null, false);
+			}
+			
 		}
 		_activeSoulShots.clear();
 	}
@@ -14605,5 +14642,16 @@ public final class L2PcInstance extends L2Playable
 	public int getLoadedImagesSize()
 	{
 		return loadedImages.size();
+	}
+	
+	/**
+	 * 
+	 */
+	public void sendActionFailed()
+	{
+		if (getClient() != null)
+		{
+			getClient().sendPacket(ActionFailed.STATIC_PACKET);
+		}
 	}
 }

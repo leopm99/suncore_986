@@ -100,6 +100,7 @@ public final class Config extends AbstractConfigs
 	public static final String VALAKAS_CONFIG = "./config/bosses/Valakas.ini";
 	public static final String VAN_HALTER_CONFIG = "./config/bosses/VanHalter.ini";
 	public static final String ZAKEN_CONFIG = "./config/bosses/Zaken.ini";
+	public static final String BOSS_CONFIG_FILE = "./config/bosses/CustomDrops.ini";
 	
 	// hexid
 	public static final String HEXID_FILE = "./config/hexid/hexid.txt";
@@ -142,6 +143,9 @@ public final class Config extends AbstractConfigs
 	
 	// sunrise
 	public static final String CHAMPION_MOBS_CONFIG = "./config/sunrise/ChampionMobs.ini";
+	
+	// elemental
+	public static final String ELEMENTAL_FILE = "./config/extra/elemental/Auction.ini";
 	
 	// --------------------------------------------------
 	// L2J Variable Definitions
@@ -254,6 +258,9 @@ public final class Config extends AbstractConfigs
 	public static boolean ALT_LEAVE_PARTY_LEADER;
 	public static boolean INITIAL_EQUIPMENT_EVENT;
 	public static long STARTING_ADENA;
+	public static boolean STARTING_BUFFS;
+	public static List<int[]> STARTING_BUFFS_M = new ArrayList<>();
+	public static List<int[]> STARTING_BUFFS_F = new ArrayList<>();
 	public static byte STARTING_LEVEL;
 	public static int STARTING_SP;
 	public static long MAX_ADENA;
@@ -707,7 +714,7 @@ public final class Config extends AbstractConfigs
 	public static float L2JMOD_CHAMPION_SPD_ATK;
 	public static int L2JMOD_CHAMPION_REWARD_LOWER_LVL_ITEM_CHANCE;
 	public static int L2JMOD_CHAMPION_REWARD_HIGHER_LVL_ITEM_CHANCE;
-	public static int L2JMOD_CHAMPION_REWARD_ID;
+	public static int[] L2JMOD_CHAMPION_REWARD_IDS;
 	public static int L2JMOD_CHAMPION_REWARD_QTY;
 	public static boolean L2JMOD_CHAMPION_ENABLE_VITALITY;
 	public static boolean L2JMOD_CHAMPION_ENABLE_IN_INSTANCES;
@@ -770,10 +777,53 @@ public final class Config extends AbstractConfigs
 	public static boolean L2JMOD_ALLOW_CHANGE_PASSWORD;
 	
 	// --------------------------------------------------
+	// Reward For Time Online
+	// --------------------------------------------------
+	public static boolean ENABLE_REWARD_FOR_TIME;
+	public static int TIME_REWARD;
+	public static int ID_REWARD;
+	public static int COUNT_REWARD;
+	public static int TIME_REWARD2;
+	public static int ID_REWARD_2;
+	public static int COUNT_REWARD_2;
+	public static int TIME_REWARD3;
+	public static int ID_REWARD_3;
+	public static int COUNT_REWARD_3;
+	
+	// --------------------------------------------------
+	// RandonSpawn
+	// --------------------------------------------------
+	public static boolean ENABLE_RANDOM_MONSTER_SPAWNS;
+	public static int MOB_MIN_SPAWN_RANGE;
+	public static int MOB_MAX_SPAWN_RANGE;
+	public static List<Integer> MOBS_LIST_NOT_RANDOM;
+	
+	// --------------------------------------------------
+	// To Mob
+	// --------------------------------------------------
+	public static boolean TELEPORT_TO_MOB_COMMAND;
+	public static boolean ALLOW_IN_PEACE_ZONE;
+	public static boolean TO_MOB_FREE;
+	public static String TO_MOB_COMMAND;
+	public static int TO_MOB_TIME;
+	public static int ID_ITEM_TO_MOB;
+	public static int COUNT_ITEM_TO_MOB;
+	
+	// --------------------------------------------------
 	// Siege Castle Manager CMD
 	// --------------------------------------------------
 	public static boolean ENABLE_SIEGE_CASTLE_MANAGER;
 	public static boolean ENABLE_GNU_PANEL;
+	
+	// --------------------------------------------------
+	// Fortress Rewards Manager
+	// --------------------------------------------------
+	public static int REWARD_ID_FORTRESS;
+	public static int REWARD_CHANCE;
+	public static int MIN_DROP_NORMAL;
+	public static int MAX_DROP_NORMAL;
+	public static int MIN_DROP_CAP;
+	public static int MAX_DROP_CAP;
 	
 	// --------------------------------------------------
 	// NPC Settings
@@ -1072,6 +1122,9 @@ public final class Config extends AbstractConfigs
 	public static int[] RETAIL_LIKE_AUGMENTATION_TOP_CHANCE;
 	public static boolean RETAIL_LIKE_AUGMENTATION_ACCESSORY;
 	public static int[] AUGMENTATION_BLACKLIST;
+	public static boolean ALT_ALLOW_AUGMENT_PVP_ITEMS;
+	public static boolean ALT_ALLOW_AUGMENT_TRADE;
+	public static boolean ALT_ALLOW_AUGMENT_DESTROY;
 	public static double HP_REGEN_MULTIPLIER;
 	public static double MP_REGEN_MULTIPLIER;
 	public static double CP_REGEN_MULTIPLIER;
@@ -1215,6 +1268,18 @@ public final class Config extends AbstractConfigs
 	public static int RESPAWN_TIME;
 	
 	// --------------------------------------------------
+	// Custom Boss Drops Settings
+	// --------------------------------------------------
+	
+	public static boolean ENABLE_CUSTOM_DROP_RB;
+	public static String ID_RB_CUSTOM_DROP;
+	public static List<Integer> ID_RB_CUSTOM_DROP_LIST = new ArrayList<>();
+	public static int ID_ITEM_REQUIRED;
+	public static int COUNT_ITEM_REQUIRED;
+	public static int ID_ITEM_REWARD;
+	public static int COUNT_ITEM_REWARD;
+	
+	// --------------------------------------------------
 	// Gracia Seeds Settings
 	// --------------------------------------------------
 	public static int SOD_TIAT_KILL_COUNT;
@@ -1263,6 +1328,34 @@ public final class Config extends AbstractConfigs
 	public static boolean CHS_ENABLE_FAME;
 	public static int CHS_FAME_AMOUNT;
 	public static int CHS_FAME_FREQUENCY;
+	
+	// --------------------------------------------------
+	// Customs
+	// --------------------------------------------------
+	public static boolean ENABLE_LEVEL_CHATS;
+	public static int LEVEL_ALL_CHAT;
+	public static int LEVEL_PM_CHAT;
+	public static int LEVEL_SHOUT_CHAT;
+	public static int LEVEL_TRADE_CHAT;
+	public static int LEVEL_HERO_CHAT;
+	public static String ALL_MSG;
+	public static String PM_MSG;
+	public static String SHOUT_MSG;
+	public static String TRADE_MSG;
+	public static String HERO_MSG;
+	
+	// --------------------------------------------------
+	// Extras
+	// --------------------------------------------------
+	public static final String REWARD_FOR_TIME = "./config/extra/RewardForTime.ini";
+	public static final String RANDOMSPAWN_FILE = "./config/extra/RandomSpawns.ini";
+	public static final String TO_MOB_CONFIG = "./config/extra/ToMob.ini";
+	
+	// --------------------------------------------------
+	// Elemental Settings
+	// --------------------------------------------------
+	public static boolean AUCTION_HOUSE_ONLY_PEACE_ZONE;
+	public static double AUCTION_HOUSE_SALE_FEE;
 	
 	public static void load()
 	{
@@ -1703,6 +1796,10 @@ public final class Config extends AbstractConfigs
 			
 			Arrays.sort(AUGMENTATION_BLACKLIST);
 			
+			ALT_ALLOW_AUGMENT_PVP_ITEMS = Character.getBoolean("AltAllowAugmentPvPItems", true);
+			ALT_ALLOW_AUGMENT_TRADE = Character.getBoolean("AltAllowAugmentTrade", true);
+			ALT_ALLOW_AUGMENT_DESTROY = Character.getBoolean("AltAllowAugmentDestroy", false);
+			
 			ALT_GAME_KARMA_PLAYER_CAN_BE_KILLED_IN_PEACEZONE = Character.getBoolean("AltKarmaPlayerCanBeKilledInPeaceZone", false);
 			ALT_GAME_KARMA_PLAYER_CAN_SHOP = Character.getBoolean("AltKarmaPlayerCanShop", true);
 			ALT_GAME_KARMA_PLAYER_CAN_TELEPORT = Character.getBoolean("AltKarmaPlayerCanTeleport", true);
@@ -1816,6 +1913,64 @@ public final class Config extends AbstractConfigs
 			SILENCE_MODE_EXCLUDE = Character.getBoolean("SilenceModeExclude", false);
 			ALT_VALIDATE_TRIGGER_SKILLS = Character.getBoolean("AltValidateTriggerSkills", false);
 			PLAYER_MOVEMENT_BLOCK_TIME = Character.getInt("NpcTalkBlockingTime", 0) * 1000;
+			
+			STARTING_BUFFS = Character.getBoolean("StartingBuffs", true);
+			String[] propertySplit = Character.getString("StartingBuffsMage", "1204,2").split(";");
+			STARTING_BUFFS_M.clear();
+			for (String buff : propertySplit)
+			{
+				String[] buffSplit = buff.split(",");
+				if (buffSplit.length != 2)
+				{
+					_log.warn("StartingBuffsMage[Config.load()]: invalid config property -> StartingBuffsMage \"" + buff + "\"");
+				}
+				else
+				{
+					try
+					{
+						STARTING_BUFFS_M.add(new int[]
+						{
+							Integer.parseInt(buffSplit[0]),
+							Integer.parseInt(buffSplit[1])
+						});
+					}
+					catch (NumberFormatException nfe)
+					{
+						if (STARTING_BUFFS_M.equals(""))
+						{
+							System.out.println("EROOOOOOOOOOOR WITH STARTING BUFS");
+						}
+					}
+				}
+			}
+			propertySplit = Character.getString("StartingBuffsFighter", "1204,2").split(";");
+			STARTING_BUFFS_F.clear();
+			for (String buff : propertySplit)
+			{
+				String[] buffSplit = buff.split(",");
+				if (buffSplit.length != 2)
+				{
+					_log.warn("StartingBuffsFighter[Config.load()]: invalid config property -> StartingBuffsFighter \"" + buff + "\"");
+				}
+				else
+				{
+					try
+					{
+						STARTING_BUFFS_F.add(new int[]
+						{
+							Integer.parseInt(buffSplit[0]),
+							Integer.parseInt(buffSplit[1])
+						});
+					}
+					catch (NumberFormatException nfe)
+					{
+						if (STARTING_BUFFS_F.equals(""))
+						{
+							System.out.println("EROOOOOOOOOOOR WITH STARTING BUFS");
+						}
+					}
+				}
+			}
 			
 			// Load Instances L2Properties file (if exists)
 			final PropertiesParser instancesSettings = new PropertiesParser(INSTANCES_CONFIG_FILE);
@@ -2111,7 +2266,7 @@ public final class Config extends AbstractConfigs
 			RAID_MIN_RESPAWN_MULTIPLIER = NPC.getFloat("RaidMinRespawnMultiplier", 1.0f);
 			RAID_MAX_RESPAWN_MULTIPLIER = NPC.getFloat("RaidMaxRespawnMultiplier", 1.0f);
 			RAID_MINION_RESPAWN_TIMER = NPC.getInt("RaidMinionRespawnTime", 300000);
-			String[] propertySplit = NPC.getString("CustomMinionsRespawnTime", "").split(";");
+			propertySplit = NPC.getString("CustomMinionsRespawnTime", "").split(";");
 			MINIONS_RESPAWN_TIME = new HashMap<>(propertySplit.length);
 			for (String prop : propertySplit)
 			{
@@ -2257,7 +2412,22 @@ public final class Config extends AbstractConfigs
 			L2JMOD_CHAMPION_SPD_ATK = champions.getFloat("ChampionSpdAtk", 1);
 			L2JMOD_CHAMPION_REWARD_LOWER_LVL_ITEM_CHANCE = champions.getInt("ChampionRewardLowerLvlItemChance", 0);
 			L2JMOD_CHAMPION_REWARD_HIGHER_LVL_ITEM_CHANCE = champions.getInt("ChampionRewardHigherLvlItemChance", 0);
-			L2JMOD_CHAMPION_REWARD_ID = champions.getInt("ChampionRewardItemID", 6393);
+			String[] propertySplit5 = champions.getString("ChampionRewardItemIDs", "6393;57").trim().split(";");
+			
+			L2JMOD_CHAMPION_REWARD_IDS = new int[propertySplit5.length];
+			try
+			{
+				int i = 0;
+				for (String itemId : propertySplit5)
+				{
+					L2JMOD_CHAMPION_REWARD_IDS[i++] = Integer.parseInt(itemId);
+				}
+			}
+			catch (NumberFormatException nfe)
+			{
+				_log.warn(nfe.getMessage(), nfe);
+			}
+			
 			L2JMOD_CHAMPION_REWARD_QTY = champions.getInt("ChampionRewardItemQty", 1);
 			L2JMOD_CHAMPION_ENABLE_VITALITY = champions.getBoolean("ChampionEnableVitality", false);
 			L2JMOD_CHAMPION_ENABLE_IN_INSTANCES = champions.getBoolean("ChampionEnableInInstances", false);
@@ -2385,6 +2555,67 @@ public final class Config extends AbstractConfigs
 			
 			ENABLE_SIEGE_CASTLE_MANAGER = L2JModSettings.getBoolean("AllowSiegeCastleManager", true);
 			ENABLE_GNU_PANEL = L2JModSettings.getBoolean("EnableGNUPanel", true);
+			
+			ENABLE_LEVEL_CHATS = L2JModSettings.getBoolean("EnableLevelChats", true);
+			LEVEL_ALL_CHAT = L2JModSettings.getInt("LevelAllChat", 1);
+			LEVEL_PM_CHAT = L2JModSettings.getInt("LevelPmChat", 1);
+			LEVEL_SHOUT_CHAT = L2JModSettings.getInt("LevelShoutChat", 70);
+			LEVEL_TRADE_CHAT = L2JModSettings.getInt("LevelTradeChat", 80);
+			LEVEL_HERO_CHAT = L2JModSettings.getInt("LevelHeroChat", 84);
+			ALL_MSG = L2JModSettings.getString("AllMsg", "You can't use this chat before Lv 20.");
+			PM_MSG = L2JModSettings.getString("PmMsg", "You can't use this chat before Lv 40.");
+			SHOUT_MSG = L2JModSettings.getString("ShoutMsg", "You can't use this chat before Lv 61.");
+			TRADE_MSG = L2JModSettings.getString("TradeMsg", "You can't use this chat before Lv 80.");
+			HERO_MSG = L2JModSettings.getString("HeroMsg", "You can't use this chat before Lv 84.");
+			
+			// Fortress Reward Manager
+			REWARD_ID_FORTRESS = L2JModSettings.getInt("RewardId", 9912);
+			REWARD_CHANCE = L2JModSettings.getInt("RewardChance", 100);
+			MIN_DROP_NORMAL = L2JModSettings.getInt("MinDropGuard", 16);
+			MAX_DROP_NORMAL = L2JModSettings.getInt("MaxDropGuard", 36);
+			MIN_DROP_CAP = L2JModSettings.getInt("MinDropCaptain", 600);
+			MAX_DROP_CAP = L2JModSettings.getInt("MaxDropCaptain", 900);
+			
+			// Load Reward For Time file (if exists)
+			final PropertiesParser RewardForTime = new PropertiesParser(REWARD_FOR_TIME);
+			
+			ENABLE_REWARD_FOR_TIME = RewardForTime.getBoolean("EnableRewardSystem", false);
+			TIME_REWARD = RewardForTime.getInt("TimeReward", 1800);
+			ID_REWARD = RewardForTime.getInt("RewardId", 57);
+			COUNT_REWARD = RewardForTime.getInt("RewardCount", 1000);
+			TIME_REWARD2 = RewardForTime.getInt("TimeReward2", 7200);
+			ID_REWARD_2 = RewardForTime.getInt("IdReward2", 57);
+			COUNT_REWARD_2 = RewardForTime.getInt("RewardCount2", 1000);
+			TIME_REWARD3 = RewardForTime.getInt("TimeReward3", 21600);
+			ID_REWARD_3 = RewardForTime.getInt("IdReward3", 57);
+			COUNT_REWARD_3 = RewardForTime.getInt("RewardCount3", 1000);
+			
+			// RandomSpawn
+			final PropertiesParser RandomSpawn = new PropertiesParser(RANDOMSPAWN_FILE);
+			
+			ENABLE_RANDOM_MONSTER_SPAWNS = RandomSpawn.getBoolean("EnableRandomMonsterSpawns", false);
+			MOB_MAX_SPAWN_RANGE = RandomSpawn.getInt("MaxSpawnMobRange", 150);
+			MOB_MIN_SPAWN_RANGE = MOB_MAX_SPAWN_RANGE * -1;
+			if (ENABLE_RANDOM_MONSTER_SPAWNS)
+			{
+				String[] mobsIds = RandomSpawn.getString("MobsSpawnNotRandom", "18812,18813,18814,22138").split(",");
+				MOBS_LIST_NOT_RANDOM = new ArrayList<>(mobsIds.length);
+				for (String id : mobsIds)
+				{
+					MOBS_LIST_NOT_RANDOM.add(Integer.valueOf(id));
+				}
+			}
+			
+			// Load To Mob File (if exists)
+			final PropertiesParser ToMob = new PropertiesParser(TO_MOB_CONFIG);
+			
+			TELEPORT_TO_MOB_COMMAND = ToMob.getBoolean("AllowToMobCommand", false);
+			TO_MOB_COMMAND = ToMob.getString("CommandInGame", "mob");
+			ALLOW_IN_PEACE_ZONE = ToMob.getBoolean("AllowInPeaceZone", false);
+			TO_MOB_TIME = ToMob.getInt("ToMobTime", 30);
+			TO_MOB_FREE = ToMob.getBoolean("FreeCommand", false);
+			ID_ITEM_TO_MOB = ToMob.getInt("ItemID", 57);
+			COUNT_ITEM_TO_MOB = ToMob.getInt("ItemCount", 1000);
 			
 			// Load PvP L2Properties file (if exists)
 			final PropertiesParser PVPSettings = new PropertiesParser(PVP_CONFIG_FILE);
@@ -2743,6 +2974,19 @@ public final class Config extends AbstractConfigs
 			CHANCE_SPAWN = destr_load.getInt("ChanceSpawn", 50);
 			RESPAWN_TIME = destr_load.getInt("RespawnTime", 720);
 			
+			// Custom Boss Drops Config
+			final PropertiesParser CustomDrops = new PropertiesParser(BOSS_CONFIG_FILE);
+			ENABLE_CUSTOM_DROP_RB = CustomDrops.getBoolean("EnableCustomDropRB", false);
+			ID_RB_CUSTOM_DROP = CustomDrops.getString("IdRBCustomDrop", "25001,25002");
+			for (final String reward : ID_RB_CUSTOM_DROP.split(","))
+			{
+				ID_RB_CUSTOM_DROP_LIST.add(Integer.parseInt(reward));
+			}
+			ID_ITEM_REQUIRED = CustomDrops.getInt("IdItemRequired", 57);
+			COUNT_ITEM_REQUIRED = CustomDrops.getInt("CountItemRequired", 200);
+			ID_ITEM_REWARD = CustomDrops.getInt("IdItemReward", 5072);
+			COUNT_ITEM_REWARD = CustomDrops.getInt("CountItemReward", 500);
+			
 			// Load DROPS_CONFIG L2Properties file (if exists)
 			final PropertiesParser dropsload = new PropertiesParser(DROPS_CONFIG);
 			
@@ -2827,6 +3071,12 @@ public final class Config extends AbstractConfigs
 			final PropertiesParser itemMallSettigns = new PropertiesParser(ITEM_MALL_CONFIG_FILE);
 			
 			GAME_POINT_ITEM_ID = itemMallSettigns.getInt("GamePointItemId", -1);
+			
+			// Elemental Configs
+			final PropertiesParser ElementalSettings = new PropertiesParser(ELEMENTAL_FILE);
+			
+			AUCTION_HOUSE_ONLY_PEACE_ZONE = ElementalSettings.getBoolean("AuctionHouseOnlyPeaceZone", true);
+			AUCTION_HOUSE_SALE_FEE = ElementalSettings.getDouble("AuctionHouseSaleFee", 0.5) / 100;
 		}
 		else if (Server.serverMode == Server.MODE_LOGINSERVER)
 		{
